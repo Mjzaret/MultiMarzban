@@ -933,7 +933,8 @@ EOF
 
         colorized_echo blue "Fetching .env file"
         curl -sL "$FILES_URL_PREFIX/.env.example" -o "$APP_DIR/.env"
-
+		
+		sed -i 's/UVICORN_PORT = 8000/UVICORN_PORT = 8001/' "$APP_DIR/.env"
         sed -i 's/^# \(XRAY_JSON = .*\)$/\1/' "$APP_DIR/.env"
         sed -i 's/^# \(SQLALCHEMY_DATABASE_URL = .*\)$/\1/' "$APP_DIR/.env"
         sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban1/xray_config.json"~' "$APP_DIR/.env"
