@@ -3,7 +3,7 @@ set -e
 
 INSTALL_DIR="/opt"
 if [ -z "$APP_NAME" ]; then
-    APP_NAME="marzban0"
+    APP_NAME="marzban3"
 fi
 APP_DIR="$INSTALL_DIR/$APP_NAME"
 DATA_DIR="/var/lib/$APP_NAME"
@@ -684,7 +684,7 @@ update_core_command() {
     check_running_as_root
     get_xray_core
     # Change the Marzban core
-    xray_executable_path="XRAY_EXECUTABLE_PATH=\"/var/lib/marzban0/xray-core/xray\""
+    xray_executable_path="XRAY_EXECUTABLE_PATH=\"/var/lib/marzban3/xray-core/xray\""
     
     echo "Changing the Marzban core..."
     # Check if the XRAY_EXECUTABLE_PATH string already exists in the .env file
@@ -728,8 +728,8 @@ services:
     env_file: .env
     network_mode: host
     volumes:
-      - /var/lib/marzban0:/var/lib/marzban0
-      - /var/lib/marzban0/logs:/var/lib/marzban-node
+      - /var/lib/marzban3:/var/lib/marzban3
+      - /var/lib/marzban3/logs:/var/lib/marzban-node
     depends_on:
       mariadb:
         condition: service_healthy
@@ -761,7 +761,7 @@ services:
       - --slow_query_log_file=/var/lib/mysql/slow.log # Logs slow queries for troubleshooting
       - --long_query_time=2                       # Defines slow query threshold as 2 seconds
     volumes:
-      - /var/lib/marzban0/mysql:/var/lib/mysql
+      - /var/lib/marzban3/mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
@@ -780,14 +780,14 @@ EOF
         curl -sL "$FILES_URL_PREFIX/.env.example" -o "$APP_DIR/.env"
 
         # Comment out the SQLite line
-        sed -i 's~^\(SQLALCHEMY_DATABASE_URL = "sqlite:////var/lib/marzban0/db.sqlite3"\)~#\1~' "$APP_DIR/.env"
+        sed -i 's~^\(SQLALCHEMY_DATABASE_URL = "sqlite:////var/lib/marzban3/db.sqlite3"\)~#\1~' "$APP_DIR/.env"
 
 
         # Add the MySQL connection string
         #echo -e '\nSQLALCHEMY_DATABASE_URL = "mysql+pymysql://marzban:password@127.0.0.1:3306/marzban"' >> "$APP_DIR/.env"
 
         sed -i 's/^# \(XRAY_JSON = .*\)$/\1/' "$APP_DIR/.env"
-        sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban0/xray_config.json"~' "$APP_DIR/.env"
+        sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban3/xray_config.json"~' "$APP_DIR/.env"
 
 
         prompt_for_marzban_password
@@ -819,8 +819,8 @@ services:
     env_file: .env
     network_mode: host
     volumes:
-      - /var/lib/marzban0:/var/lib/marzban0
-      - /var/lib/marzban0/logs:/var/lib/marzban-node
+      - /var/lib/marzban3:/var/lib/marzban3
+      - /var/lib/marzban3/logs:/var/lib/marzban-node
     depends_on:
       mysql:
         condition: service_healthy
@@ -853,7 +853,7 @@ services:
       - --slow_query_log_file=/var/lib/mysql/slow.log # Logs slow queries for troubleshooting
       - --long_query_time=2                       # Defines slow query threshold as 2 seconds
     volumes:
-      - /var/lib/marzban0/mysql:/var/lib/mysql
+      - /var/lib/marzban3/mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "marzban", "--password=\${MYSQL_PASSWORD}"]
       start_period: 5s
@@ -872,14 +872,14 @@ EOF
         curl -sL "$FILES_URL_PREFIX/.env.example" -o "$APP_DIR/.env"
 
         # Comment out the SQLite line
-        sed -i 's~^\(SQLALCHEMY_DATABASE_URL = "sqlite:////var/lib/marzban0/db.sqlite3"\)~#\1~' "$APP_DIR/.env"
+        sed -i 's~^\(SQLALCHEMY_DATABASE_URL = "sqlite:////var/lib/marzban3/db.sqlite3"\)~#\1~' "$APP_DIR/.env"
 
 
         # Add the MySQL connection string
         #echo -e '\nSQLALCHEMY_DATABASE_URL = "mysql+pymysql://marzban:password@127.0.0.1:3306/marzban"' >> "$APP_DIR/.env"
 
         sed -i 's/^# \(XRAY_JSON = .*\)$/\1/' "$APP_DIR/.env"
-        sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban0/xray_config.json"~' "$APP_DIR/.env"
+        sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban3/xray_config.json"~' "$APP_DIR/.env"
 
 
         prompt_for_marzban_password
@@ -917,7 +917,7 @@ services:
     env_file: .env
     network_mode: host
     volumes:
-      - /var/lib/marzban0:/var/lib/marzban0
+      - /var/lib/marzban3:/var/lib/marzban3
 EOF
 
 
@@ -934,11 +934,11 @@ EOF
         colorized_echo blue "Fetching .env file"
         curl -sL "$FILES_URL_PREFIX/.env.example" -o "$APP_DIR/.env"
 		
-	sed -i 's/^UVICORN_PORT *= *8000/UVICORN_PORT = 8000/' "$APP_DIR/.env"
+	sed -i 's/^UVICORN_PORT *= *8000/UVICORN_PORT = 8003/' "$APP_DIR/.env"
         sed -i 's/^# \(XRAY_JSON = .*\)$/\1/' "$APP_DIR/.env"
         sed -i 's/^# \(SQLALCHEMY_DATABASE_URL = .*\)$/\1/' "$APP_DIR/.env"
-        sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban0/xray_config.json"~' "$APP_DIR/.env"
-        sed -i 's~\(SQLALCHEMY_DATABASE_URL = \).*~\1"sqlite:////var/lib/marzban0/db.sqlite3"~' "$APP_DIR/.env"
+        sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban3/xray_config.json"~' "$APP_DIR/.env"
+        sed -i 's~\(SQLALCHEMY_DATABASE_URL = \).*~\1"sqlite:////var/lib/marzban3/db.sqlite3"~' "$APP_DIR/.env"
 
 
 
