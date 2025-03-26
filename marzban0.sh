@@ -905,8 +905,21 @@ EOF
         echo "----------------------------"
         colorized_echo red "Using SQLite as database"
         echo "----------------------------"
-        colorized_echo blue "Fetching compose file"
-        curl -sL "$FILES_URL_PREFIX/docker-compose.yml" -o "$docker_file_path"
+        #colorized_echo blue "Fetching compose file"
+        #curl -sL "$FILES_URL_PREFIX/docker-compose.yml" -o "$docker_file_path"
+
+        # Generate docker-compose.yml with MySQL content
+        cat > "$docker_file_path" <<EOF
+services:
+  marzban:
+    image: gozargah/marzban:${marzban_version}
+    restart: always
+    env_file: .env
+    network_mode: host
+    volumes:
+      - /var/lib/marzban0:/var/lib/marzban0
+EOF
+
 
         # Install requested version
         if [ "$marzban_version" == "latest" ]; then
@@ -920,7 +933,8 @@ EOF
 
         colorized_echo blue "Fetching .env file"
         curl -sL "$FILES_URL_PREFIX/.env.example" -o "$APP_DIR/.env"
-
+		
+	sed -i 's/^UVICORN_PORT *= *8000/UVICORN_PORT = 8000/' "$APP_DIR/.env"
         sed -i 's/^# \(XRAY_JSON = .*\)$/\1/' "$APP_DIR/.env"
         sed -i 's/^# \(SQLALCHEMY_DATABASE_URL = .*\)$/\1/' "$APP_DIR/.env"
         sed -i 's~\(XRAY_JSON = \).*~\1"/var/lib/marzban0/xray_config.json"~' "$APP_DIR/.env"
